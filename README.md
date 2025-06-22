@@ -6,7 +6,7 @@ Inspired by GitHub Copilot’s commit suggestions, but designed for the CLI.
 
 ---
 
-## ✨ Features
+## Features
 
 - Terminal-first, no IDE needed
 - Suggests clean, conventional commit messages from your staged Git diff
@@ -16,9 +16,9 @@ Inspired by GitHub Copilot’s commit suggestions, but designed for the CLI.
 
 ---
 
-## 🛠 Installation
+## Installation
 
-### 🧃 Homebrew (recommended)
+### Homebrew (recommended)
 
 ```sh
 brew tap ademajagon/toka
