@@ -31,15 +31,14 @@ type ResponsePayload struct {
 }
 
 func GenerateCommitMessage(apiKey string, diff string) (string, error) {
-	prompt := "Based on the following Git diff, generate a concise commit message:\n\n" + diff
+	prompt := "Write a single-line conventional commit message that describes the following Git diff. Only return the commit message. Do not include explanations, newlines, or formatting beyond the message itself. Diff:\n\n" + diff
 
 	payload := RequestPayload{
 		Model: defaultModel,
 		Messages: []Message{
 			{
 				Role:    "system",
-				Content: "You are a helpful assistant that writes clean, conventional commit messages.",
-			},
+				Content: "You are a concise assistant that only returns a one-line, conventional commit message. No explanations, markdown, or commentary."},
 			{
 				Role:    "user",
 				Content: prompt,

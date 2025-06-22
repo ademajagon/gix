@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -35,8 +34,6 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Staged changes found.")
-
 		cfg, err := config.Load()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Failed to load configuration:", err)
@@ -55,16 +52,8 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		firstLine := suggestion
-		if i := indexOfNewline(suggestion); i != -1 {
-			firstLine = suggestion[:i]
-		}
-
-		fullCmd := fmt.Sprintf("git commit -m %q", firstLine)
+		fullCmd := fmt.Sprintf("git commit -m %q", suggestion)
 		utils.TypingEffect(fullCmd, 5*time.Millisecond)
-
-		fmt.Print("\n\nPress [Enter] to commit, or Ctrl+C to cancel...")
-		_, _ = bufio.NewReader(os.Stdin).ReadBytes('\n')
 
 		genCmd := exec.Command("git", "commit", "-m", suggestion)
 		genCmd.Stdout = os.Stdout
@@ -78,13 +67,4 @@ var commitCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
-}
-
-func indexOfNewline(s string) int {
-	for i, c := range s {
-		if c == '\n' || c == '\r' {
-			return i
-		}
-	}
-	return -1
 }
