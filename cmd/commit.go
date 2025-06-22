@@ -55,6 +55,8 @@ var commitCmd = &cobra.Command{
 		fullCmd := fmt.Sprintf("git commit -m %q", suggestion)
 		utils.TypingEffect(fullCmd, 5*time.Millisecond)
 
+		_, _ = fmt.Scanln()
+
 		genCmd := exec.Command("git", "commit", "-m", suggestion)
 		genCmd.Stdout = os.Stdout
 		genCmd.Stderr = os.Stderr
