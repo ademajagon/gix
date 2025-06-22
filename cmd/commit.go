@@ -41,7 +41,13 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
+		spinner := utils.NewSpinner()
+		spinner.Start()
+
 		suggestion, err := openai.GenerateCommitMessage(cfg.OpenAIKey, diff)
+
+		spinner.Stop()
+
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "OpenAI error: %v\n", err)
 			os.Exit(1)
