@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/ademajagon/toka/config"
@@ -33,8 +34,6 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("Staged changes found.")
-
 		cfg, err := config.Load()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Failed to load configuration:", err)
@@ -53,7 +52,18 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		utils.TypingEffect(suggestion, 5*time.Millisecond)
+		fullCmd := fmt.Sprintf("git commit -m %q", suggestion)
+		utils.TypingEffect(fullCmd, 5*time.Millisecond)
+
+		_, _ = fmt.Scanln()
+
+		genCmd := exec.Command("git", "commit", "-m", suggestion)
+		genCmd.Stdout = os.Stdout
+		genCmd.Stderr = os.Stderr
+		if err := genCmd.Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "Commit failed: %v\n", err)
+			os.Exit(1)
+		}
 	},
 }
 
