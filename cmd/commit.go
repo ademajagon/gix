@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ademajagon/toka/config"
 	"github.com/ademajagon/toka/git"
+	"github.com/ademajagon/toka/openai"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +32,24 @@ var commitCmd = &cobra.Command{
 		}
 
 		fmt.Println("Staged changes found.")
-		fmt.Println("--- DIFF BEGIN ---")
-		fmt.Println(diff)
-		fmt.Println("--- DIFF END ---")
+		// fmt.Println("--- DIFF BEGIN ---")
+		// fmt.Println(diff)
+		// fmt.Println("--- DIFF END ---")
+
+		cfg, err := config.Load()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Failed to load configuration:", err)
+			os.Exit(1)
+		}
+
+		suggestion, err := openai.GenerateCommitMessage(cfg.OpenAIKey, diff)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "OpenAI error: %v\n", err)
+			os.Exit(1)
+		}
+
+		fmt.Println("✨ Suggested commit message:")
+		fmt.Println(suggestion)
 	},
 }
 
