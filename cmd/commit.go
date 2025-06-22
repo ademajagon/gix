@@ -3,10 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ademajagon/toka/config"
 	"github.com/ademajagon/toka/git"
 	"github.com/ademajagon/toka/openai"
+	"github.com/ademajagon/toka/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -32,9 +34,6 @@ var commitCmd = &cobra.Command{
 		}
 
 		fmt.Println("Staged changes found.")
-		// fmt.Println("--- DIFF BEGIN ---")
-		// fmt.Println(diff)
-		// fmt.Println("--- DIFF END ---")
 
 		cfg, err := config.Load()
 		if err != nil {
@@ -48,8 +47,7 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		fmt.Println("✨ Suggested commit message:")
-		fmt.Println(suggestion)
+		utils.TypingEffect(suggestion, 5*time.Millisecond)
 	},
 }
 
