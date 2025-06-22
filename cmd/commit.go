@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"os/exec"
 	"time"
 
 	"github.com/ademajagon/toka/config"
@@ -53,10 +55,36 @@ var commitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		utils.TypingEffect(suggestion, 5*time.Millisecond)
+		firstLine := suggestion
+		if i := indexOfNewline(suggestion); i != -1 {
+			firstLine = suggestion[:i]
+		}
+
+		fullCmd := fmt.Sprintf("git commit -m %q", firstLine)
+		utils.TypingEffect(fullCmd, 5*time.Millisecond)
+
+		fmt.Print("\n\nPress [Enter] to commit, or Ctrl+C to cancel...")
+		_, _ = bufio.NewReader(os.Stdin).ReadBytes('\n')
+
+		genCmd := exec.Command("git", "commit", "-m", suggestion)
+		genCmd.Stdout = os.Stdout
+		genCmd.Stderr = os.Stderr
+		if err := genCmd.Run(); err != nil {
+			fmt.Fprintf(os.Stderr, "Commit failed: %v\n", err)
+			os.Exit(1)
+		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(commitCmd)
+}
+
+func indexOfNewline(s string) int {
+	for i, c := range s {
+		if c == '\n' || c == '\r' {
+			return i
+		}
+	}
+	return -1
 }
