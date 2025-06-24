@@ -12,6 +12,7 @@ var version = "dev"
 var rootCmd = &cobra.Command{
 	Use:     "toka",
 	Short:   "Toka is an AI-powered commit assistant.",
+	Long:    `Toka is a CLI tool that suggests Git commit messages using AI based on your staged changes.`,
 	Version: version,
 }
 
