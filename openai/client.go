@@ -31,6 +31,10 @@ type ResponsePayload struct {
 }
 
 func GenerateCommitMessage(apiKey string, diff string) (string, error) {
+	if apiKey == "" {
+		return "", errors.New("OpenAI API key is missing. Set it using `toka config set-key`")
+	}
+
 	prompt := "Write a single-line conventional commit message that describes the following Git diff. Only return the commit message. Do not include explanations, newlines, or formatting beyond the message itself. Diff:\n\n" + diff
 
 	payload := RequestPayload{
