@@ -31,5 +31,5 @@ func (s *Spinner) Start() {
 
 func (s *Spinner) Stop() {
 	atomic.StoreInt32(&s.stopFlag, 1)
-	fmt.Print("\r")
+	fmt.Print("\r\033[K")
 }
