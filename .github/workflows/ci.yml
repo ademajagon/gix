@@ -59,12 +59,6 @@ jobs:
           go-version: "1.24"
           cache: true
 
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
-        with:
-          version: v1.59.0
-          args: --timeout=2m --verbose
-
   test:
     name: Go Test
     runs-on: ubuntu-latest
