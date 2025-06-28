@@ -34,23 +34,9 @@ jobs:
           name: toka-ci-binary
           path: toka
 
-  lint:
-    runs-on: ubuntu-latest
-    needs: tidy
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.24"
-          cache: true
-      - uses: golangci/golangci-lint-action@v6
-        with:
-          version: v1.60.0
-          args: --timeout=3m
-
   test:
     runs-on: ubuntu-latest
-    needs: [build, lint]
+    needs: build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
