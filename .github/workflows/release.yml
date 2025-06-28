@@ -29,7 +29,7 @@ jobs:
           echo "EXT=" >> $GITHUB_ENV
           if [ "${{ matrix.goos }}" = "windows" ]; then echo "EXT=.exe" >> $GITHUB_ENV; fi
 
-      - name: Build and archive
+      - name: Build
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
@@ -37,11 +37,9 @@ jobs:
           mkdir -p dist
           BIN_NAME=toka-${{ matrix.goos }}-${{ matrix.goarch }}$EXT
           go build -ldflags "-X github.com/ademajagon/toka/cmd.version=${VERSION}" -o dist/$BIN_NAME .
-          cd dist
-          zip $BIN_NAME.zip $BIN_NAME
-          shasum -a 256 $BIN_NAME.zip > $BIN_NAME.zip.sha256
+          echo "Built $BIN_NAME"
 
-      - name: Upload to GitHub Release
+      - name: Release
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
