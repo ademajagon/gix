@@ -8,56 +8,53 @@ on:
 
 jobs:
   tidy:
-    name: Go Mod Tidy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v4
         with:
           go-version: "1.24"
           cache: true
-
-      - name: Run go mod tidy
-        run: |
+      - run: |
           go mod tidy
           git diff --exit-code go.mod go.sum
 
   build:
-    name: Go Build
     runs-on: ubuntu-latest
     needs: tidy
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v4
         with:
           go-version: "1.24"
           cache: true
-
-      - name: Build with Makefile
-        run: make build VERSION=${GITHUB_REF##*/}
-
-      - name: Upload built binary
-        uses: actions/upload-artifact@v4
+      - run: make build VERSION=ci
+      - uses: actions/upload-artifact@v4
         with:
-          name: toka-${{ runner.os }}-${{ github.ref_name }}
+          name: toka-ci-binary
           path: toka
 
-  test:
-    name: Go Test
+  lint:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: tidy
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v4
         with:
           go-version: "1.24"
           cache: true
+      - uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59.0
+          args: --timeout=3m
 
-      - name: Run Tests
-        run: go test -v ./...
+  test:
+    runs-on: ubuntu-latest
+    needs: [build, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.24"
+          cache: true
+      - run: go test -v ./...
