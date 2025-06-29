@@ -32,6 +32,6 @@ go.work.sum
 # .vscode/
 
 # Ignore precompiled binaries
-toka
-toka-*
+gix
+gix-*
 *.exe

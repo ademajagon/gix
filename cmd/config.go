@@ -6,13 +6,13 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ademajagon/toka/config"
+	"github.com/ademajagon/gix/config"
 	"github.com/spf13/cobra"
 )
 
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Manage Toka configuration",
+	Short: "Manage Gix configuration",
 }
 
 var setKeyCmd = &cobra.Command{

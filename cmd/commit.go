@@ -6,10 +6,10 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/ademajagon/toka/config"
-	"github.com/ademajagon/toka/git"
-	"github.com/ademajagon/toka/openai"
-	"github.com/ademajagon/toka/utils"
+	"github.com/ademajagon/gix/config"
+	"github.com/ademajagon/gix/git"
+	"github.com/ademajagon/gix/openai"
+	"github.com/ademajagon/gix/utils"
 	"github.com/spf13/cobra"
 )
 

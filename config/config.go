@@ -13,7 +13,7 @@ type Config struct {
 }
 
 const configFileName = "config.json"
-const appName = "toka"
+const appName = "gix"
 
 func getConfigDir() (string, error) {
 	dir, err := os.UserConfigDir()
@@ -67,7 +67,7 @@ func Load() (Config, error) {
 	data, err := os.ReadFile(path)
 
 	if err != nil {
-		return Config{}, errors.New("config file not found. Please run `toka config set-key <key>` to set your OpenAI key")
+		return Config{}, errors.New("config file not found. Please run `gix config set-key <key>` to set your OpenAI key")
 	}
 
 	var cfg Config
