@@ -1,6 +1,6 @@
-# Toka
+# Gix
 
-**Toka** is a terminal-based AI that helps you write meaningful Git commit messages
+**Gix** is a terminal-based AI that helps you write meaningful Git commit messages
 
 Inspired by GitHub Copilot’s commit suggestions, but designed for the CLI.
 
@@ -21,5 +21,5 @@ Inspired by GitHub Copilot’s commit suggestions, but designed for the CLI.
 ### Homebrew (recommended)
 
 ```sh
-brew tap ademajagon/toka
-brew install toka
+brew tap ademajagon/gix
+brew install gix

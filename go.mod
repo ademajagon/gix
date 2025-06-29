@@ -1,4 +1,4 @@
-module github.com/ademajagon/toka
+module github.com/ademajagon/gix
 
 go 1.24.2
 

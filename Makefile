@@ -1,8 +1,8 @@
 VERSION ?= dev
 
-BINARY_NAME := toka
+BINARY_NAME := gix
 
-PKG := github.com/ademajagon/toka/cmd
+PKG := github.com/ademajagon/gix/cmd
 
 build:
 	go build -ldflags "-X $(PKG).version=$(VERSION)" -o $(BINARY_NAME) .

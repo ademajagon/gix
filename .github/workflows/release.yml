@@ -9,7 +9,7 @@ jobs:
   release:
     name: Build & Release
     runs-on: ubuntu-latest
-    if: github.repository == 'ademajagon/toka'
+    if: github.repository == 'ademajagon/gix'
 
     strategy:
       matrix:
@@ -35,8 +35,8 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           mkdir -p dist
-          BIN_NAME=toka-${{ matrix.goos }}-${{ matrix.goarch }}$EXT
-          go build -ldflags "-X github.com/ademajagon/toka/cmd.version=${VERSION}" -o dist/$BIN_NAME .
+          BIN_NAME=gix-${{ matrix.goos }}-${{ matrix.goarch }}$EXT
+          go build -ldflags "-X github.com/ademajagon/gix/cmd.version=${VERSION}" -o dist/$BIN_NAME .
           echo "Built $BIN_NAME"
 
       - name: Release
