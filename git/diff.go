@@ -2,7 +2,7 @@ package git
 
 import (
 	"bytes"
-	"errors"
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -37,7 +37,7 @@ func GetStagedDiff() (string, error) {
 	diff := strings.TrimSpace(stdout.String())
 
 	if diff == "" {
-		return "", errors.New("no staged changes to commit")
+		return "", fmt.Errorf("no staged changes to commit.\nUse `git add <files>` to stage changes first")
 	}
 
 	return diff, nil

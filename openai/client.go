@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -32,7 +33,7 @@ type ResponsePayload struct {
 
 func GenerateCommitMessage(apiKey string, diff string) (string, error) {
 	if apiKey == "" {
-		return "", errors.New("OpenAI API key is missing. Set it using `gix config set-key`")
+		return "", fmt.Errorf("missing OpenAI API key.\nRun:\n  gix config set-key <your-api-key>")
 	}
 
 	prompt := "Write a single-line conventional commit message that describes the following Git diff. Only return the commit message. Do not include explanations, newlines, or formatting beyond the message itself. Diff:\n\n" + diff
@@ -74,7 +75,7 @@ func GenerateCommitMessage(apiKey string, diff string) (string, error) {
 
 	if res.StatusCode != http.StatusOK {
 		bodyBytes, _ := io.ReadAll(res.Body)
-		return "", errors.New("OpenAI API error: " + string(bodyBytes))
+		return "", fmt.Errorf("OpenAI API error (%s): %s", res.Status, string(bodyBytes))
 	}
 
 	var response ResponsePayload
