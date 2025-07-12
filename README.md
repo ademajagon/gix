@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="/docs/logo_gix_light.svg">
-  <img alt="Gix logo" src="/docs/logo_gix_dark.svg" width="40%" height="40%">
+  <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="40%" height="40%">
 </picture>
 
 <br/>
