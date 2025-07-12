@@ -2,17 +2,10 @@
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="/docs/logo_gix_light.svg">
-  <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="40%" height="40%">
+  <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="50%" height="50%">
 </picture>
 
-<br/>
-<em>Gix is a command-line tool that brings AI to your Git workflow — built for speed, precision, and power</em>
-
-<h3>
-
-[Releases](https://github.com/ademajagon/gix/releases)
-
-</h3>
+Gix is a command-line tool that brings AI to your Git workflow — built for speed, precision, and power.
 </div>
 
 ---
