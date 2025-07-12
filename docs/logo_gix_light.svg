@@ -1,12 +1,11 @@
 <svg width="150" height="70" viewBox="0 0 150 70" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M70 45V25H80V45H70Z" fill="black"/>
-<path d="M70 15V5H80V15H70Z" fill="black"/>
-<path d="M30 65V55H60V25H50V35H40V25H30V45H50V65H30Z" fill="black"/>
-<path d="M50 25V20V15H60V25H50Z" fill="black"/>
-<path d="M40 25V15H50V20V25H40Z" fill="black"/>
-<path d="M90 45V35H100V45H90Z" fill="black"/>
-<path d="M100 35V25H110V35H100Z" fill="black"/>
-<path d="M110 25V15H120V25H110Z" fill="black"/>
-<path d="M90 25V15H100V25H90Z" fill="black"/>
-<path d="M110 45V35H120V45H110Z" fill="black"/>
+<path d="M50 65H30V55H50V65Z" fill="black"/>
+<path d="M60 55H50V45H30V25H40V35H50V25H40V15H60V55Z" fill="black"/>
+<path d="M80 45H70V25H80V45Z" fill="black"/>
+<path d="M100 45H90V35H100V45Z" fill="black"/>
+<path d="M120 45H110V35H120V45Z" fill="black"/>
+<path d="M110 35H100V25H110V35Z" fill="black"/>
+<path d="M100 25H90V15H100V25Z" fill="black"/>
+<path d="M120 25H110V15H120V25Z" fill="black"/>
+<path d="M80 15H70V5H80V15Z" fill="black"/>
 </svg>
