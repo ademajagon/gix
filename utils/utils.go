@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,6 +16,8 @@ func EditInEditor(init string) string {
 	if editor == "" {
 		editor = "nano"
 	}
+
+	fmt.Println("Editing commit message in:", editor)
 
 	cmd := exec.Command(editor, tmp)
 	cmd.Stdin = os.Stdin

@@ -42,3 +42,22 @@ func GetStagedDiff() (string, error) {
 
 	return diff, nil
 }
+
+func GetFullDiff() (string, error) {
+	var stdout bytes.Buffer
+	cmd := exec.Command("git", "diff", "--unified=3")
+	cmd.Stdout = &stdout
+	err := cmd.Run()
+
+	if err != nil {
+		return "", err
+	}
+
+	diff := strings.TrimSpace(stdout.String())
+
+	if diff == "" {
+		return "", fmt.Errorf("no unstaged changes found")
+	}
+
+	return diff, nil
+}
