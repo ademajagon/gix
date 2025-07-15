@@ -7,6 +7,55 @@ import (
 	"strings"
 )
 
+type Hunk struct {
+	FilePath string
+	Content  string
+}
+
+func ExtractHunks(diff string) []Hunk {
+	var hunks []Hunk
+	lines := strings.Split(diff, "\n")
+
+	var currentFile string
+	var currentPatch []string
+	capturing := false
+
+	for _, line := range lines {
+		if strings.HasPrefix(line, "diff --git") {
+			if capturing && len(currentPatch) > 0 && currentFile != "" {
+				hunks = append(hunks, Hunk{
+					FilePath: currentFile,
+					Content:  strings.Join(currentPatch, "\n"),
+				})
+			}
+
+			currentPatch = []string{line}
+			currentFile = parseFilePath(line)
+			capturing = true
+		} else if capturing {
+			currentPatch = append(currentPatch, line)
+		}
+	}
+
+	if capturing && len(currentPatch) > 0 && currentFile != "" {
+		hunks = append(hunks, Hunk{
+			FilePath: currentFile,
+			Content:  strings.Join(currentPatch, "\n"),
+		})
+	}
+
+	return hunks
+}
+
+func parseFilePath(diffLine string) string {
+	parts := strings.Fields(diffLine)
+	if len(parts) >= 3 {
+		right := parts[3]
+		return strings.TrimPrefix(right, "b/")
+	}
+	return ""
+}
+
 func IsGitRepo() bool {
 	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
 	err := cmd.Run()
