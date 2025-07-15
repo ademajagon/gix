@@ -183,3 +183,24 @@ Diff:
 
 	return result, nil
 }
+
+func GenerateCommitMessageForGroup(apiKey string, hunks []string) (string, error) {
+	joined := "These are the hunks:\n\n" + "```\n" + joinCode(hunks) + "\n```"
+
+	prompt := `You're an expert developer reviewing a set of related Git diff hunks. Write a **single-line conventional commit message** that summarizes their purpose.
+
+Only return the commit message. Do not include any explanations, headers, or formatting.
+
+` + joined
+
+	return GenerateCommitMessage(apiKey, prompt)
+}
+
+func joinCode(snippets []string) string {
+	out := ""
+	for _, s := range snippets {
+		out += s + "\n\n"
+	}
+
+	return out
+}
