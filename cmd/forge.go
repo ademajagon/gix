@@ -3,10 +3,12 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ademajagon/gix/config"
 	"github.com/ademajagon/gix/git"
 	"github.com/ademajagon/gix/openai"
+	"github.com/ademajagon/gix/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -20,35 +22,59 @@ var forgeCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		cfg, err := config.Load()
+		cfg, _ := config.Load()
+		diff, _ := git.GetFullDiff()
+		hunks := git.ExtractHunks(diff)
+
+		var contents []string
+		for _, h := range hunks {
+			contents = append(contents, h.Content)
+		}
+
+		vectors, err := openai.EmbedHunks(cfg.OpenAIKey, contents)
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "error: config not loaded")
+			fmt.Fprintf(os.Stderr, "embedding error: %v\n", err)
 			os.Exit(1)
 		}
 
-		diff, err := git.GetFullDiff()
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "nothing to forge (no unstaged changes)")
-			os.Exit(0)
-		}
+		fmt.Printf("Got %d vectors\n", len(vectors))
 
-		fmt.Println("Analyzing your changes...")
+		clusters := utils.ClusterGroups(vectors, 0.80)
 
-		grouped, err := openai.GroupDiffIntoCommits(cfg.OpenAIKey, diff)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: OpenAI failed: %v\n", err)
-			os.Exit(1)
-		}
+		for i, group := range clusters {
+			var groupHunks []string
 
-		if len(grouped) == 0 {
-			fmt.Println("No groups were returned.")
-			return
-		}
+			for _, idx := range group {
+				groupHunks = append(groupHunks, hunks[idx].Content)
+			}
 
-		fmt.Println("\n Suggested commit groupings:")
+			msg, err := openai.GenerateCommitMessageForGroup(cfg.OpenAIKey, groupHunks)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "Failed to generate commit message for group %d: %v\n", i+1, err)
+				continue
+			}
 
-		for i, g := range grouped {
-			fmt.Printf("  %d. %s\n", i+1, g)
+			fmt.Printf("\nGroup %d:\n", i+1)
+			utils.TypingEffect("Commit message: "+msg, 5*time.Millisecond)
+
+			patch := ""
+			for _, h := range groupHunks {
+				patch += h + "\n"
+			}
+
+			if err := utils.ApplyPatchToIndex(patch); err != nil {
+				utils.TypingEffect("Patch failed. Skipping group.", 5*time.Millisecond)
+				continue
+			}
+
+			if err := utils.CommitWithMessage(msg); err != nil {
+				utils.TypingEffect("Commit failed. Reseting index.", 5*time.Millisecond)
+				_ = utils.ResetIndex()
+				continue
+			}
+
+			utils.TypingEffect("Commited successfully!", 5*time.Millisecond)
+			_ = utils.ResetIndex()
 		}
 	},
 }
