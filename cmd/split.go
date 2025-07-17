@@ -3,8 +3,11 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
+	"github.com/ademajagon/gix/config"
 	"github.com/ademajagon/gix/git"
+	"github.com/ademajagon/gix/semantics"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +22,7 @@ var splitCmd = &cobra.Command{
 
 		hasStaged, err := git.HasStagedChanges()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: failed to check staged changes: %v\n", err)
+			fmt.Fprintf(os.Stderr, "error: checking staged changes: %v\n", err)
 			os.Exit(1)
 		}
 
@@ -30,7 +33,7 @@ var splitCmd = &cobra.Command{
 
 		hunks, err := git.ParseHunks()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: failed to parse hunks: %v\n", err)
+			fmt.Fprintf(os.Stderr, "error parsing hunks: %v\n", err)
 			os.Exit(1)
 		}
 
@@ -39,13 +42,23 @@ var splitCmd = &cobra.Command{
 			return
 		}
 
-		fmt.Printf("\nFound %d hunks:\n\n", len(hunks))
-		for i, h := range hunks {
-			fmt.Printf("Hunk %d:\n", i+1)
-			fmt.Printf("File:   %s\n", h.FilePath)
-			fmt.Printf("Header: %s\n", h.Header)
-			fmt.Println("Body:")
-			fmt.Println(h.Body)
+		cfg, err := config.Load()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error loading config: %v\n", err)
+			os.Exit(1)
+		}
+
+		groups, err := semantics.ClusterHunks(cfg.OpenAIKey, hunks)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error clustering hunks: %v\n", err)
+			os.Exit(1)
+		}
+
+		for i, group := range groups {
+			fmt.Printf("Commit %d: %s\n", i+1, group.Message)
+			for _, h := range group.Hunks {
+				fmt.Printf("- %s: %s\n", h.FilePath, strings.TrimSpace(h.Header))
+			}
 			fmt.Println("--------------------------------------------------")
 		}
 	},
