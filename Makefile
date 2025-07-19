@@ -9,3 +9,4 @@ build:
 
 clean:
 	rm -f $(BINARY_NAME)
+	rm -rf .gix
