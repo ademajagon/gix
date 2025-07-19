@@ -33,7 +33,6 @@ func ParseHunks() ([]Hunk, error) {
 		line := scanner.Text()
 
 		if strings.HasPrefix(line, "diff --git") {
-			// Flush previous diff
 			if len(currentLines) > 0 && currentFile != "" {
 				hunks = append(hunks, Hunk{
 					FilePath: currentFile,
