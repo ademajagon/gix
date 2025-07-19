@@ -2,6 +2,7 @@ package semantics
 
 import (
 	"fmt"
+	"math"
 	"strings"
 
 	"github.com/ademajagon/gix/git"
@@ -90,9 +91,6 @@ func cosineSimilarity(a, b []float32) float64 {
 	if normA == 0 || normB == 0 {
 		return 0
 	}
-	return dot / (sqrt(normA) * sqrt(normB))
-}
 
-func sqrt(x float64) float64 {
-	return x * x
+	return dot / math.Sqrt(normA) * math.Sqrt(normB)
 }
