@@ -60,7 +60,7 @@ func ClusterHunks(apiKey string, hunks []git.Hunk) ([]HunkGroup, error) {
 	}
 
 	for i := range groups {
-		diff := joinGroupPatch(groups[i].Hunks)
+		diff := JoinGroupPatch(groups[i].Hunks)
 		msg, err := openai.GenerateCommitMessage(apiKey, diff)
 		if err != nil {
 			return nil, fmt.Errorf("failed to generate message for group %d: %w", i+1, err)
@@ -71,13 +71,11 @@ func ClusterHunks(apiKey string, hunks []git.Hunk) ([]HunkGroup, error) {
 	return groups, nil
 }
 
-func joinGroupPatch(hunks []git.Hunk) string {
+func JoinGroupPatch(hunks []git.Hunk) string {
 	var b strings.Builder
 	for _, h := range hunks {
-		b.WriteString("diff --git a/" + h.FilePath + " b/" + h.FilePath + "\n")
 		b.WriteString(h.Body + "\n\n")
 	}
-
 	return b.String()
 }
 

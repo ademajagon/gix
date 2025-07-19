@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/ademajagon/gix/config"
 	"github.com/ademajagon/gix/git"
@@ -54,12 +53,14 @@ var splitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		for i, group := range groups {
-			fmt.Printf("Commit %d: %s\n", i+1, group.Message)
-			for _, h := range group.Hunks {
-				fmt.Printf("- %s: %s\n", h.FilePath, strings.TrimSpace(h.Header))
-			}
-			fmt.Println("--------------------------------------------------")
+		if len(groups) == 0 {
+			fmt.Fprintln(os.Stderr, "nothing to split (no semantic groups found)")
+			os.Exit(0)
+		}
+
+		if err := semantics.ApplyGroups(groups); err != nil {
+			fmt.Fprintf(os.Stderr, "error applying commits: %v\n", err)
+			os.Exit(1)
 		}
 	},
 }
