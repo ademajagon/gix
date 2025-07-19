@@ -61,6 +61,15 @@ var splitCmd = &cobra.Command{
 			}
 			fmt.Println("--------------------------------------------------")
 		}
+
+		fmt.Println("Applying commits...")
+
+		if err := semantics.ApplyGroups(groups); err != nil {
+			fmt.Fprintf(os.Stderr, "error applying commits: %v\n", err)
+			os.Exit(1)
+		}
+
+		fmt.Println("All groups commited successfully.")
 	},
 }
 
