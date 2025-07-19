@@ -92,5 +92,5 @@ func cosineSimilarity(a, b []float32) float64 {
 		return 0
 	}
 
-	return dot / math.Sqrt(normA) * math.Sqrt(normB)
+	return dot / (math.Sqrt(normA) * math.Sqrt(normB))
 }
