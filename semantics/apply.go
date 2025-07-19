@@ -12,17 +12,17 @@ func ApplyGroups(groups []HunkGroup) error {
 		return fmt.Errorf("no group to apply")
 	}
 
-	fmt.Println("🔐 Stashing working directory...")
-	if err := exec.Command("git", "stash", "push", "--include-untracked", "--keep-index", "-m", "gix-temp").Run(); err != nil {
+	stash := exec.Command("git", "stash", "push", "--include-untracked", "--keep-index", "--quiet", "-m", "gix-temp")
+	if err := stash.Run(); err != nil {
 		return fmt.Errorf("git stash failed: %w", err)
 	}
+
 	defer func() {
-		fmt.Println("Restoring stashed changes...")
-		exec.Command("git", "stash", "pop").Run()
+		_ = exec.Command("git", "stash", "pop", "--quiet").Run()
 	}()
 
 	for i, group := range groups {
-		fmt.Printf("Committing group %d: %s\n", i+1, group.Message)
+		fmt.Printf("[commit %d/%d] %s\n", i+1, len(groups), group.Message)
 
 		if err := exec.Command("git", "reset").Run(); err != nil {
 			return fmt.Errorf("git reset failed: %w", err)
@@ -34,17 +34,11 @@ func ApplyGroups(groups []HunkGroup) error {
 			return fmt.Errorf("write patch failed: %w", err)
 		}
 
-		cmd := exec.Command("git", "apply", "--cached", tmpPath)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
+		if err := exec.Command("git", "apply", "--cached", tmpPath).Run(); err != nil {
 			return fmt.Errorf("git apply failed: %w", err)
 		}
 
-		commit := exec.Command("git", "commit", "-m", group.Message)
-		commit.Stdout = os.Stdout
-		commit.Stderr = os.Stderr
-		if err := commit.Run(); err != nil {
+		if err := exec.Command("git", "commit", "-m", group.Message).Run(); err != nil {
 			return fmt.Errorf("git commit failed: %w", err)
 		}
 	}
