@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
-	"regexp"
 	"strings"
 )
 
@@ -14,8 +13,6 @@ type Hunk struct {
 	Header   string
 	Body     string
 }
-
-var hunkHeaderRegex = regexp.MustCompile(`^@@\s+[-+0-9,]+\s+[-+0-9,]+\s+@@`)
 
 func ParseHunks() ([]Hunk, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--unified=3")
@@ -27,44 +24,33 @@ func ParseHunks() ([]Hunk, error) {
 	}
 
 	scanner := bufio.NewScanner(&stdout)
+
 	var hunks []Hunk
 	var currentFile string
-	var currentHunk []string
-	var recording bool
+	var currentLines []string
 
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		if strings.HasPrefix(line, "diff --git") {
-			currentFile = parseFilePath(line)
-			recording = false
-			continue
-		}
-
-		if hunkHeaderRegex.MatchString(line) {
-			if len(currentHunk) > 0 {
+			// Flush previous diff
+			if len(currentLines) > 0 && currentFile != "" {
 				hunks = append(hunks, Hunk{
 					FilePath: currentFile,
-					Header:   currentHunk[0],
-					Body:     strings.Join(currentHunk, "\n"),
+					Body:     strings.Join(currentLines, "\n"),
 				})
 			}
-
-			currentHunk = []string{line}
-			recording = true
-			continue
-		}
-
-		if recording {
-			currentHunk = append(currentHunk, line)
+			currentLines = []string{line}
+			currentFile = parseFilePath(line)
+		} else {
+			currentLines = append(currentLines, line)
 		}
 	}
 
-	if len(currentHunk) > 0 {
+	if len(currentLines) > 0 && currentFile != "" {
 		hunks = append(hunks, Hunk{
 			FilePath: currentFile,
-			Header:   currentHunk[0],
-			Body:     strings.Join(currentHunk, "\n"),
+			Body:     strings.Join(currentLines, "\n"),
 		})
 	}
 
