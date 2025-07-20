@@ -5,23 +5,79 @@
   <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="50%" height="50%">
 </picture>
 
-Gix is a command-line tool that brings AI to your Git workflow — built for speed, precision, and power.
+# Gix
+
+**Gix is a command-line tool that brings AI to your Git workflow.**
+
+[![Release](https://img.shields.io/github/v/release/ademajagon/gix?color=green&label=release)](https://github.com/ademajagon/gix/releases)
+
 </div>
 
 ---
 
-## Gix
+## Overview
 
-**Gix** is an AI Git interface for developers who value clean history, faster workflows, and smarter collaboration.
-
-While it started with intelligent commit message generation, Gix is evolving into a broader assistant — designed to help developers manage branches, generate PRs, split logical changes, and understand code history with the help of large language models.
+**Gix** brings AI to your Git workflow, a CLI tool that helps you work smarter, not slower. Built for speed, built for clarity, built for developers.
 
 ---
 
 ## Features
 
-- Terminal-first Git experience, enhanced by AI
-- Clean, conventional commit suggestions from staged diffs
-- Smarter branch organization and history inspection (coming soon)
-- Uses your own OpenAI API key — no lock-in, no cloud dependency
-- Built in Go — fast, portable, and cross-platform
+- AI-suggested conventional commit messages
+- `gix split` - split staged diffs into multiple commits
+- Groups related changes using LLM-based embeddings
+- Bring your own OpenAI API key (no lock-in)
+- Built in Go – fast, portable, and cross-platform
+
+---
+
+## Installation
+
+### macOS (Homebrew)
+
+```bash
+brew tap ademajagon/gix
+brew install gix
+```
+
+### Linux / Windows
+
+Download from [Releases](https://github.com/ademajagon/gix/releases) and add it to your `PATH`.
+
+
+### Go (for contributors)
+
+```bash
+go install github.com/ademajagon/gix@latest
+```
+
+## Usage
+
+### Generate a commit message
+
+```bash
+git add .
+gix commit
+```
+
+### Split staged changes into atomic commits
+
+```bash
+git add -p
+gix split
+```
+
+Gix will group commits and ask for confirmation before applying.
+
+---
+
+## Configuration
+
+```bash
+gix config set openai_key sk-...
+```
+
+
+## License
+
+MIT © [Agon Ademaj](https://github.com/ademajagon)
