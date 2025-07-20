@@ -5,15 +5,13 @@
   <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="50%" height="50%">
 </picture>
 
-**gix: Git on the command line, with a bit of AI.**
+gix: Git on the command line, with a bit of AI.
 
 [![Release](https://img.shields.io/github/v/release/ademajagon/gix?color=green&label=release)](https://github.com/ademajagon/gix/releases)
 
 </div>
 
 ---
-
-## Overview
 
 ## Overview
 
