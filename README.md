@@ -5,9 +5,7 @@
   <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="50%" height="50%">
 </picture>
 
-# Gix
-
-**Gix is a command-line tool that brings AI to your Git workflow.**
+**gix: Git on the command line, with a bit of AI.**
 
 [![Release](https://img.shields.io/github/v/release/ademajagon/gix?color=green&label=release)](https://github.com/ademajagon/gix/releases)
 
@@ -17,7 +15,11 @@
 
 ## Overview
 
-**Gix** brings AI to your Git workflow, a CLI tool that helps you work smarter, not slower. Built for speed, built for clarity, built for developers.
+## Overview
+
+Gix is a CLI tool that helps you keep your git history clean. It can split large diffs, write conventional commits, and automate the repetitive parts.
+
+It runs locally, uses your own OpenAI key, and fits into your existing workflow.
 
 ---
 
