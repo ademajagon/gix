@@ -6,6 +6,7 @@ import (
 
 	"github.com/ademajagon/gix/config"
 	"github.com/ademajagon/gix/git"
+	"github.com/ademajagon/gix/provider"
 	"github.com/ademajagon/gix/semantics"
 	"github.com/spf13/cobra"
 )
@@ -47,7 +48,13 @@ var splitCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		groups, err := semantics.ClusterHunks(cfg.OpenAIKey, hunks)
+		p, err := provider.New(cfg.ResolveProvider(), cfg.APIKey())
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
+
+		groups, err := semantics.ClusterHunks(p, hunks)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error clustering hunks: %v\n", err)
 			os.Exit(1)

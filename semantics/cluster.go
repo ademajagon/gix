@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/ademajagon/gix/git"
-	"github.com/ademajagon/gix/openai"
+	"github.com/ademajagon/gix/provider"
 )
 
 type HunkGroup struct {
@@ -14,7 +14,7 @@ type HunkGroup struct {
 	Message string
 }
 
-func ClusterHunks(apiKey string, hunks []git.Hunk) ([]HunkGroup, error) {
+func ClusterHunks(p provider.AIProvider, hunks []git.Hunk) ([]HunkGroup, error) {
 	if len(hunks) == 0 {
 		return nil, nil
 	}
@@ -24,7 +24,7 @@ func ClusterHunks(apiKey string, hunks []git.Hunk) ([]HunkGroup, error) {
 		texts = append(texts, fmt.Sprintf("%s\n%s", h.Header, h.Body))
 	}
 
-	embeddings, err := openai.GetEmbeddings(apiKey, texts)
+	embeddings, err := p.GetEmbeddings(texts)
 	if err != nil {
 		return nil, fmt.Errorf("failed to embed hunks: %w", err)
 	}
@@ -61,7 +61,7 @@ func ClusterHunks(apiKey string, hunks []git.Hunk) ([]HunkGroup, error) {
 
 	for i := range groups {
 		diff := JoinGroupPatch(groups[i].Hunks)
-		msg, err := openai.GenerateCommitMessage(apiKey, diff)
+		msg, err := p.GenerateCommitMessage(diff)
 		if err != nil {
 			return nil, fmt.Errorf("failed to generate message for group %d: %w", i+1, err)
 		}
