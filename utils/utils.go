@@ -7,9 +7,12 @@ import (
 	"strings"
 )
 
+// EditInEditor opens init text in the users $EDITOR (fallback: nano)
 func EditInEditor(init string) string {
 	tmp := filepath.Join(os.TempDir(), "gix_commit_message.txt")
-	_ = os.WriteFile(tmp, []byte(init), 0600)
+	if err := os.WriteFile(tmp, []byte(init), 0o600); err != nil {
+		return init
+	}
 
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
@@ -26,6 +29,5 @@ func EditInEditor(init string) string {
 	if err != nil {
 		return init
 	}
-
 	return strings.TrimSpace(string(edited))
 }
