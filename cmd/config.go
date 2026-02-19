@@ -58,7 +58,7 @@ func runSetKey(_ *cobra.Command, _ []string) error {
 	case "openai":
 		cfg.OpenAIKey = key
 	default:
-		return fmt.Errorf("unknown provider", keyProvider)
+		return fmt.Errorf("unknown provider %q", keyProvider)
 	}
 
 	if err := config.Save(cfg); err != nil {
@@ -73,7 +73,7 @@ func runSetKey(_ *cobra.Command, _ []string) error {
 func runSetProvider(_ *cobra.Command, args []string) error {
 	name := strings.ToLower(strings.TrimSpace(args[0]))
 	if name != "openai" && name != "gemini" {
-		return fmt.Errorf("unknown provider", name)
+		return fmt.Errorf("unknown provider %q", name)
 	}
 
 	cfg, _ := config.Load()
