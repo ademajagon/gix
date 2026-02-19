@@ -10,6 +10,8 @@ import (
 
 type Config struct {
 	OpenAIKey string `json:"openai_key"`
+	GeminiKey string `json:"gemini_key,omitempty"`
+	Provider  string `json:"provider,omitempty"`
 }
 
 const configFileName = "config.json"
@@ -67,7 +69,7 @@ func Load() (Config, error) {
 	data, err := os.ReadFile(path)
 
 	if err != nil {
-		return Config{}, errors.New("config file not found. Please run `gix config set-key <key>` to set your OpenAI key")
+		return Config{}, errors.New("config file not found. Please run `gix config set-key` to set your API key")
 	}
 
 	var cfg Config
@@ -75,9 +77,23 @@ func Load() (Config, error) {
 		return Config{}, err
 	}
 
-	if cfg.OpenAIKey == "" {
-		return Config{}, errors.New("OpenAI key is missing in config")
-	}
-
 	return cfg, nil
+}
+
+// ResolveProvider returns the active provider name, defaulting to "openai".
+func (c Config) ResolveProvider() string {
+	if c.Provider != "" {
+		return c.Provider
+	}
+	return "openai"
+}
+
+// APIKey returns the API key for the active provider.
+func (c Config) APIKey() string {
+	switch c.ResolveProvider() {
+	case "gemini":
+		return c.GeminiKey
+	default:
+		return c.OpenAIKey
+	}
 }

@@ -12,7 +12,7 @@ var version = "dev"
 var rootCmd = &cobra.Command{
 	Use:     "gix",
 	Short:   "Gix is an AI-powered commit assistant.",
-	Long:    `Gix is a CLI tool that suggests Git commit messages using AI based on your staged changes.`,
+	Long:    `Gix is a CLI tool that suggests Git commit messages using AI based on your staged changes. Supports OpenAI and Google Gemini.`,
 	Version: version,
 }
 

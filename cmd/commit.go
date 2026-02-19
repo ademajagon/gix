@@ -10,7 +10,7 @@ import (
 
 	"github.com/ademajagon/gix/config"
 	"github.com/ademajagon/gix/git"
-	"github.com/ademajagon/gix/openai"
+	"github.com/ademajagon/gix/provider"
 	"github.com/ademajagon/gix/utils"
 	"github.com/spf13/cobra"
 )
@@ -43,20 +43,26 @@ var commitCmd = &cobra.Command{
 		cfg, err := config.Load()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "error: config not loaded: %v\n", err)
-			fmt.Fprintln(os.Stderr, "hint: run `gix config set-key` to set your OpenAI key")
+			fmt.Fprintln(os.Stderr, "hint: run `gix config set-key` to set your API key")
+			os.Exit(1)
+		}
+
+		p, err := provider.New(cfg.ResolveProvider(), cfg.APIKey())
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}
 
 		spinner := utils.NewSpinner()
 		spinner.Start()
-		suggestion, err := openai.GenerateCommitMessage(cfg.OpenAIKey, diff)
+		suggestion, err := p.GenerateCommitMessage(diff)
 		spinner.Stop()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error: OpenAI failed: %v\n", err)
+			fmt.Fprintf(os.Stderr, "error: AI provider failed: %v\n", err)
 			os.Exit(1)
 		}
 
-		finalMessage, err := promptCommitMessage(suggestion, diff, cfg.OpenAIKey)
+		finalMessage, err := promptCommitMessage(suggestion, diff, p)
 		if err != nil {
 			os.Exit(0)
 		}
@@ -76,7 +82,7 @@ func init() {
 	rootCmd.AddCommand(commitCmd)
 }
 
-func promptCommitMessage(initial, diff, apiKey string) (string, error) {
+func promptCommitMessage(initial, diff string, p provider.AIProvider) (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	msg := initial
 
@@ -97,10 +103,10 @@ func promptCommitMessage(initial, diff, apiKey string) (string, error) {
 		case "r":
 			spinner := utils.NewSpinner()
 			spinner.Start()
-			newMsg, err := openai.GenerateCommitMessage(apiKey, diff)
+			newMsg, err := p.GenerateCommitMessage(diff)
 			spinner.Stop()
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "error: OpenAI failed: %v\n", err)
+				fmt.Fprintf(os.Stderr, "error: AI provider failed: %v\n", err)
 				continue
 			}
 			msg = newMsg
