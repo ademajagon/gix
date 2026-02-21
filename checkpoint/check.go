@@ -75,7 +75,7 @@ func fetchLatestRelease(product, currentVersion string) (*CheckResponse, error) 
 	req.Header.Set("Accept", "application/vnd.github+json")
 	req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
 	req.Header.Set("User-Agent", fmt.Sprintf(
-		"%s%s (+https://github.com/ademajagon/gix; sig=%s; os=%s; arch=%s)",
+		"%s%s (+https://github.com/ademajagon/gix; os=%s; arch=%s)",
 		product, currentVersion, runtime.GOOS, runtime.GOARCH,
 	))
 
