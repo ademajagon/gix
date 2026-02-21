@@ -5,6 +5,9 @@ on:
     tags:
       - "v*"
 
+permissions:
+  contents: write
+
 jobs:
   release:
     name: Build & Release
@@ -13,8 +16,8 @@ jobs:
 
     strategy:
       matrix:
-        goos: [linux, darwin, windows]
-        goarch: [amd64, arm64]
+        goos: [ linux, darwin, windows ]
+        goarch: [ amd64, arm64 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -44,4 +47,4 @@ jobs:
         with:
           files: dist/*
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
