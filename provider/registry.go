@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	POpenAI = "openai"
-	PGemini = "gemini"
+	ProviderOpenAI = "openai"
+	ProviderGemini = "gemini"
 )
 
 // New returns an AIProvider for the given name and API key.
@@ -16,9 +16,9 @@ func New(name, apiKey string) (AIProvider, error) {
 	}
 
 	switch name {
-	case POpenAI:
+	case ProviderOpenAI:
 		return NewOpenAI(apiKey), nil
-	case PGemini:
+	case ProviderGemini:
 		return NewGemini(apiKey), nil
 	default:
 		return nil, fmt.Errorf("unknown provider %q (supported: openai, gemini)", name)

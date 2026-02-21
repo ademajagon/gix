@@ -16,7 +16,7 @@ type HunkGroup struct {
 
 const similarityThreshold = 0.85
 
-// ClusterHunks uses embedding-based cosine similarity to group hunks than generates commit message for each group
+// ClusterHunks uses embedding-based cosine similarity to group hunks and then generate commit messages for each group
 func ClusterHunks(p provider.AIProvider, hunks []git.Hunk) ([]HunkGroup, error) {
 	if len(hunks) == 0 {
 		return nil, nil

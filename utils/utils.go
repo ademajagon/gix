@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// EditInEditor opens init text in the users $EDITOR (fallback: nano)
+// EditInEditor opens the init text in the users $EDITOR (fallback: nano)
 func EditInEditor(init string) string {
 	tmp := filepath.Join(os.TempDir(), "gix_commit_message.txt")
 	if err := os.WriteFile(tmp, []byte(init), 0o600); err != nil {

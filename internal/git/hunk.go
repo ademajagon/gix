@@ -32,6 +32,8 @@ func ParseHunks() ([]Hunk, error) {
 func parseHunksFromDiff(diff string) ([]Hunk, error) {
 	scanner := bufio.NewScanner(strings.NewReader(diff))
 
+	scanner.Buffer(make([]byte, 64*1024), 10*1024*1024)
+
 	var hunks []Hunk
 	var currentFile string
 	var fileHeader []string
