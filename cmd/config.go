@@ -18,8 +18,12 @@ var configCmd = &cobra.Command{
 var setKeyCmd = &cobra.Command{
 	Use:   "set-key",
 	Short: "Set the API key for a provider",
-	Long:  "Set the API key for an AI provider.",
-	RunE:  runSetKey,
+	Long: `Set the API key for an AI provider.
+
+Examples:
+  gix config set-key                      # set OpenAI key (default)
+  gix config set-key --provider gemini    # set Gemini key`,
+	RunE: runSetKey,
 }
 
 var setProviderCmd = &cobra.Command{
@@ -30,6 +34,25 @@ var setProviderCmd = &cobra.Command{
 	RunE:      runSetProvider,
 }
 
+var setUpdateCheckCmd = &cobra.Command{
+	Use:   "update-check <on|off>",
+	Short: "Enable or disable background version update checks",
+	Long: `Enable or disable background version update checks.
+
+gix checks for newer versions in the background after each command and prints
+a notice if one is available. The check never blocks the primary command and
+results are cached for 48 hours.
+
+To disable permanently:
+  gix config update-check off
+
+You can also set GIX_CHECKPOINT_DISABLE=1 in your environment to disable
+for a single session without changing the config file.`,
+	Args:      cobra.ExactArgs(1),
+	ValidArgs: []string{"on", "off"},
+	RunE:      runSetUpdateCheck,
+}
+
 var keyProvider string
 
 func init() {
@@ -37,6 +60,7 @@ func init() {
 
 	configCmd.AddCommand(setKeyCmd)
 	configCmd.AddCommand(setProviderCmd)
+	configCmd.AddCommand(setUpdateCheckCmd)
 	rootCmd.AddCommand(configCmd)
 }
 
@@ -50,7 +74,7 @@ func runSetKey(_ *cobra.Command, _ []string) error {
 		return fmt.Errorf("API key cannot be empty")
 	}
 
-	cfg, _ := config.Load()
+	cfg, _ := config.Load() // ignore error, file may not exist yet
 
 	switch keyProvider {
 	case "gemini":
@@ -84,5 +108,28 @@ func runSetProvider(_ *cobra.Command, args []string) error {
 	}
 
 	fmt.Printf("Default provider set to %q\n", name)
+	return nil
+}
+
+func runSetUpdateCheck(_ *cobra.Command, args []string) error {
+	val := strings.ToLower(strings.TrimSpace(args[0]))
+	if val != "on" && val != "off" {
+		return fmt.Errorf("expected 'on' or 'off', got %q", val)
+	}
+
+	cfg, _ := config.Load()
+	cfg.DisableUpdateCheck = val == "off"
+
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("saving config: %w", err)
+	}
+
+	if cfg.DisableUpdateCheck {
+		fmt.Println("Update checks disabled.")
+		fmt.Println("You can also set GIX_CHECKPOINT_DISABLE=1 for a one-off session disable.")
+	} else {
+		fmt.Println("Update checks enabled.")
+	}
+
 	return nil
 }
