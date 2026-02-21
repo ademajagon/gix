@@ -17,6 +17,8 @@ type Config struct {
 	OpenAIKey string `json:"openai_key,omitempty"`
 	GeminiKey string `json:"gemini_key,omitempty"`
 	Provider  string `json:"provider,omitempty"`
+
+	DisableUpdateCheck bool `json:"disable_update_check,omitempty"`
 }
 
 // ResolveProvider returns the active provider name, defaulting to "openai".
