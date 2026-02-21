@@ -56,6 +56,7 @@ func Check(p *CheckParams) (*CheckResponse, error) {
 	}
 
 	if cached := readCache(p.CacheFile, ttl); cached != nil {
+		cached.Outdated = isNewer(cached.CurrentVersion, p.Version)
 		return cached, nil
 	}
 
@@ -203,7 +204,7 @@ func isNewer(latest, current string) bool {
 	lp := parseSemver(l)
 	cp := parseSemver(c)
 	for i := range lp {
-		if lp[i] > cp[i] {
+		if lp[i] != cp[i] {
 			return lp[i] > cp[i]
 		}
 	}
