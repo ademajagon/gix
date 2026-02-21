@@ -10,21 +10,14 @@ import (
 var version = "dev"
 
 var rootCmd = &cobra.Command{
-	Use:     "gix",
-	Short:   "Gix is an AI-powered commit assistant.",
-	Long:    `Gix is a CLI tool that suggests Git commit messages using AI based on your staged changes. Supports OpenAI and Google Gemini.`,
-	Version: version,
+	Use:          "gix",
+	Short:        "AI-powered git commit assistant",
+	Long:         "gix helps you write clean conventional commit messages and split staged diffs into atomic commits.",
+	Version:      version,
+	SilenceUsage: true,
 }
 
 func Execute() {
-	rootCmd.AddCommand(&cobra.Command{
-		Use:   "version",
-		Short: "Print the version number",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("gix version", version)
-		},
-	})
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)

@@ -8,6 +8,7 @@
 gix: Git on the command line, with a bit of AI.
 
 [![Release](https://img.shields.io/github/v/release/ademajagon/gix?color=green&label=release)](https://github.com/ademajagon/gix/releases)
+[![Build](https://github.com/ademajagon/gix/actions/workflows/ci.yml/badge.svg)](https://github.com/ademajagon/gix/actions/workflows/ci.yml)
 
 </div>
 
@@ -15,7 +16,7 @@ gix: Git on the command line, with a bit of AI.
 
 ## Overview
 
-Gix is a CLI tool that helps you keep your git history clean. It can split large diffs, write conventional commits, and automate the repetitive parts.
+Gix is a CLI tool that helps you keep your git history clean. It can write conventional commits, split large diffs, and automate the repetitive git parts.
 
 It runs locally, uses your own API key (OpenAI or Gemini), and fits into your existing workflow.
 
@@ -28,7 +29,7 @@ It runs locally, uses your own API key (OpenAI or Gemini), and fits into your ex
 - Groups related changes using LLM-based embeddings
 - **Multiple AI providers** - OpenAI or Google Gemini
 - Bring your own API key (no lock-in)
-- Built in Go – fast, portable, and cross-platform
+- Built in Go - fast, portable, and cross-platform
 
 ---
 
@@ -43,7 +44,7 @@ brew install gix
 
 ### Linux / Windows
 
-Download from [Releases](https://github.com/ademajagon/gix/releases) and add it to your `PATH`.
+Download binaries from [Releases](https://github.com/ademajagon/gix/releases) and add it to your `PATH`.
 
 ### Go (for contributors)
 
@@ -60,10 +61,10 @@ git add .
 gix commit
 ```
 
-### Split staged changes into atomic commits
+### Split staged changes (beta)
 
 ```bash
-git add -p
+git add .
 gix split
 ```
 
@@ -73,46 +74,32 @@ Gix will group commits and ask for confirmation before applying.
 
 ## Configuration
 
-### Using OpenAI (default)
+`gix` stores configuration locally on your machine.
 
+### Set provider
 ```bash
-# Set OpenAI as your provider
 gix config set-provider openai
-
-# Set your OpenAI API key
-gix config set-key
-```
-
-### Using Google Gemini
-
-```bash
-# Set Gemini as your provider
 gix config set-provider gemini
-
-# Set your Gemini API key
-gix config set-key --provider gemini
 ```
 
-### Quick setup
-
-If you don't set a provider, OpenAI is used by default. You can also set keys for both providers and switch between them:
+### Set API key
 
 ```bash
-# Set up both providers
-gix config set-key --provider openai
-gix config set-key --provider gemini
+# open-ai (default)
+gix config set-key
 
-# Switch between them
-gix config set-provider gemini  # Use Gemini
-gix config set-provider openai  # Use OpenAI
+# gemini
+gix config set-key --provider gemini
 ```
+
+Configure both providers and switch anytime.
 
 ---
 
-## Supported AI Models
+## Supported Providers
 
-| Provider | Chat Model          | Embedding Model        |
-| -------- | ------------------- | ---------------------- |
+| Provider | Chat Model          | Embeddings             |
+| -------- | ------------------- |------------------------|
 | OpenAI   | gpt-4o              | text-embedding-3-small |
 | Gemini   | gemini-flash-latest | gemini-embedding-001   |
 

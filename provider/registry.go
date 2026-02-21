@@ -1,14 +1,20 @@
 package provider
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	ProviderOpenAI = "openai"
 	ProviderGemini = "gemini"
 )
 
-// New creates an AIProvider for the given provider name.
-func New(name string, apiKey string) (AIProvider, error) {
+// New returns an AIProvider for the given name and API key.
+func New(name, apiKey string) (AIProvider, error) {
+	if apiKey == "" {
+		return nil, fmt.Errorf("API key is required for provider %q — run `gix config set-key`", name)
+	}
+
 	switch name {
 	case ProviderOpenAI:
 		return NewOpenAI(apiKey), nil

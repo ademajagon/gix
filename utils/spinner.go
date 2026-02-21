@@ -14,21 +14,18 @@ func NewSpinner() *Spinner {
 	return &Spinner{}
 }
 
+// Start begins animating the spinner in a background goroutine
 func (s *Spinner) Start() {
-	frames := []string{
-		"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏",
-	}
-
+	frames := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 	go func() {
-		i := 0
-		for atomic.LoadInt32(&s.stopFlag) == 0 {
+		for i := 0; atomic.LoadInt32(&s.stopFlag) == 0; i++ {
 			fmt.Printf("\r%s", frames[i%len(frames)])
 			time.Sleep(100 * time.Millisecond)
-			i++
 		}
 	}()
 }
 
+// Stop terminates the spinner and clears the line
 func (s *Spinner) Stop() {
 	atomic.StoreInt32(&s.stopFlag, 1)
 	fmt.Print("\r\033[K")
