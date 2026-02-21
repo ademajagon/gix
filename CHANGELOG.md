@@ -1,4 +1,4 @@
-## [v0.2.0] - 2026-02-22
+## [v0.2.7] - 2026-02-22
 
 ### Added
 - Checkpoint system for version update notifications (mirrors Terraform's go-checkpoint pattern)
