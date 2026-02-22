@@ -26,10 +26,11 @@ var rootCmd = &cobra.Command{
 	Long:         "gix helps you write clean conventional commit messages and split staged diffs into smaller commits.",
 	Version:      version,
 	SilenceUsage: true,
-	PersistentPostRun: func(cmd *cobra.Command, args []string) {
+	PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
 		if showUpdateNotice != nil {
 			showUpdateNotice()
 		}
+		return nil
 	},
 }
 

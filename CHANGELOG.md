@@ -1,3 +1,8 @@
+## [v0.2.8] - 2026-02-22
+
+### Fixed
+- Version update notice now shows even when a command fails
+
 ## [v0.2.7] - 2026-02-22
 
 ### Added
