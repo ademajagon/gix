@@ -1,3 +1,12 @@
+## [v0.2.9] - 2026-02-23
+### Added
+
+- Automated Homebrew tap formula update on every release, `brew upgrade gix` now works automatically
+- checksums.txt attached to every GitHub Release for binary verification
+
+### Changed
+- Release pipeline split into build and release jobs so checksums are generated after all binaries are ready
+
 ## [v0.2.8] - 2026-02-22
 ### Fixed
 Update notice now shows even when a command fails
