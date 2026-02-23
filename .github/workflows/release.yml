@@ -75,3 +75,11 @@ jobs:
             dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger homebrew-tap formula update
+        run: |
+          curl --fail-with-body -X POST \
+            -H "Authorization: token ${{ secrets.TAP_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/ademajagon/homebrew-tap/dispatches \
+            -d "{\"event_type\": \"formula-update\", \"client_payload\": {\"product\": \"gix\", \"version\": \"${GITHUB_REF##*/}\"}}"
