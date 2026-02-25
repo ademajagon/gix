@@ -46,21 +46,37 @@ func truncateDiff(diff string, maxBytes int) string {
 		return diff
 	}
 
-	window := diff[:maxBytes]
-
-	if idx := strings.LastIndex(window, "\ndiff --git"); idx > 0 {
+	if idx := lastIndexWithin(diff, "\ndiff --git", maxBytes); idx > 0 {
 		truncated := strings.TrimSpace(diff[:idx])
 		total := countFiles(diff)
 		kept := countFiles(truncated)
 		return fmt.Sprintf("%s\n\n[diff truncated: showing %d of %d file(s)]", truncated, kept, total)
 	}
 
-	if idx := strings.LastIndex(window, "\n@@"); idx > 0 {
+	if idx := lastIndexWithin(diff, "\n@@", maxBytes); idx > 0 {
 		truncated := strings.TrimSpace(diff[:idx])
 		return fmt.Sprintf("%s\n\n[diff truncated: showing partial diff of first file]", truncated)
 	}
 
 	return diff[:maxBytes] + "\n\n[diff truncated]"
+}
+
+func lastIndexWithin(s, marker string, maxBytes int) int {
+	idx := -1
+	start := 0
+	for {
+		i := strings.Index(s[start:], marker)
+		if i < 0 {
+			break
+		}
+		abs := start + i
+		if abs >= maxBytes {
+			break
+		}
+		idx = abs
+		start = abs + len(marker)
+	}
+	return idx
 }
 
 func countFiles(diff string) int {
