@@ -30,7 +30,7 @@ var setProviderCmd = &cobra.Command{
 	Use:       "set-provider <openai|gemini>",
 	Short:     "Set the default AI provider",
 	Args:      cobra.ExactArgs(1),
-	ValidArgs: []string{"openai", "gemini"},
+	ValidArgs: []string{"openai", "gemini", "ollama"},
 	RunE:      runSetProvider,
 }
 
@@ -53,6 +53,24 @@ for a single session without changing the config file.`,
 	RunE:      runSetUpdateCheck,
 }
 
+var setOllamaURLCmd = &cobra.Command{
+	Use:   "set-ollama-url <url>",
+	Short: "Set the Ollama base URL (default: http://localhost:11434)",
+	Args:  cobra.ExactArgs(1),
+	RunE:  runSetOllamaURL,
+}
+
+var setOllamaModelCmd = &cobra.Command{
+	Use:   "set-ollama-model <chat-model> <embed-model>",
+	Short: "Set the Ollama chat and embed models",
+	Long: `Set the Ollama models used for commit messages and gix split.
+
+Example:
+  gix config set-ollama-model llama3.2 nomic-embed-text`,
+	Args: cobra.ExactArgs(2),
+	RunE: runSetOllamaModel,
+}
+
 var keyProvider string
 
 func init() {
@@ -61,6 +79,8 @@ func init() {
 	configCmd.AddCommand(setKeyCmd)
 	configCmd.AddCommand(setProviderCmd)
 	configCmd.AddCommand(setUpdateCheckCmd)
+	configCmd.AddCommand(setOllamaURLCmd)
+	configCmd.AddCommand(setOllamaModelCmd)
 	rootCmd.AddCommand(configCmd)
 }
 
@@ -96,7 +116,7 @@ func runSetKey(_ *cobra.Command, _ []string) error {
 
 func runSetProvider(_ *cobra.Command, args []string) error {
 	name := strings.ToLower(strings.TrimSpace(args[0]))
-	if name != "openai" && name != "gemini" {
+	if name != "openai" && name != "gemini" && name != "ollama" {
 		return fmt.Errorf("unknown provider %q", name)
 	}
 
@@ -131,5 +151,26 @@ func runSetUpdateCheck(_ *cobra.Command, args []string) error {
 		fmt.Println("Update checks enabled.")
 	}
 
+	return nil
+}
+
+func runSetOllamaURL(_ *cobra.Command, args []string) error {
+	cfg, _ := config.Load()
+	cfg.OllamaBaseURL = strings.TrimSpace(args[0])
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("saving config: %w", err)
+	}
+	fmt.Printf("Ollama base URL set to %q\n", cfg.OllamaBaseURL)
+	return nil
+}
+
+func runSetOllamaModel(_ *cobra.Command, args []string) error {
+	cfg, _ := config.Load()
+	cfg.OllamaChatModel = strings.TrimSpace(args[0])
+	cfg.OllamaEmbedModel = strings.TrimSpace(args[1])
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("saving config: %w", err)
+	}
+	fmt.Printf("Ollama models set — chat: %q, embed: %q\n", cfg.OllamaChatModel, cfg.OllamaEmbedModel)
 	return nil
 }

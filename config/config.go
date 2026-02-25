@@ -18,6 +18,10 @@ type Config struct {
 	GeminiKey string `json:"gemini_key,omitempty"`
 	Provider  string `json:"provider,omitempty"`
 
+	OllamaBaseURL    string `json:"ollama_base_url,omitempty"`
+	OllamaChatModel  string `json:"ollama_chat_model,omitempty"`
+	OllamaEmbedModel string `json:"ollama_embed_model,omitempty"`
+
 	DisableUpdateCheck bool `json:"disable_update_check,omitempty"`
 }
 
@@ -33,6 +37,8 @@ func (c Config) APIKey() string {
 	switch c.ResolveProvider() {
 	case "gemini":
 		return c.GeminiKey
+	case "ollama":
+		return ""
 	default:
 		return c.OpenAIKey
 	}
