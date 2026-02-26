@@ -2,7 +2,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: light)" srcset="/docs/logo_gix_light.svg">
-  <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="50%" height="50%">
+  <img alt="gix logo" src="/docs/logo_gix_dark.svg" width="40%" height="40%">
 </picture>
 
 gix: Git on the command line, with a bit of AI.
@@ -14,23 +14,25 @@ gix: Git on the command line, with a bit of AI.
 
 ---
 
-## Overview
+`gix` generates conventional commit messages from your staged diff and splits large changes into small commits.
 
-Gix is a CLI tool that helps you keep your git history clean. It can write conventional commits, split large diffs, and automate the repetitive git parts.
+## Why gix
 
-It runs locally, uses your own API key (OpenAI or Gemini), and fits into your existing workflow.
+Writing a good commit message takes discipline and it's usually the first thing skipped when moving fast. `gix` handles it for you, read the diff, generate the message, commit.
+
+For larger changes, `gix split` groups related hunks by semantic similarity and proposes one atomic commit per group, each with its own generated message. It turns one big noisy commit into a clean history.
 
 ---
 
 ## Features
 
-- AI-suggested conventional commit messages
-- `gix split` - split staged diffs into multiple commits
-- Groups related changes using LLM-based embeddings
-- **Multiple AI providers** - OpenAI or Google Gemini
-- Bring your own API key (no lock-in)
-- Built in Go - fast, portable, and cross-platform
-
+- Generates [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) from staged diffs
+- `gix split` splits a large diff into multiple semantic commits
+- Embedding-based hunk clustering for intelligent grouping
+- Multiple AI providers, OpenAI, Gemini or Ollama (local)
+- Bring your own API key
+- Runs fully offline with Ollama
+- Single binary, no runtime dependencies
 ---
 
 ## Installation
@@ -46,7 +48,7 @@ brew install gix
 
 Download binaries from [Releases](https://github.com/ademajagon/gix/releases) and add it to your `PATH`.
 
-### Go (for contributors)
+### From source
 
 ```bash
 go install github.com/ademajagon/gix@latest
@@ -57,18 +59,19 @@ go install github.com/ademajagon/gix@latest
 ### Generate a commit message
 
 ```bash
-git add .
+git stage .
 gix commit
 ```
 
-### Split staged changes (beta)
+You'll see a suggested message and can accept, edit, regenerate or cancel.
+
+### Split a large diff into multiple commits (beta)
 
 ```bash
-git add .
+git stage .
 gix split
 ```
-
-Gix will group commits and ask for confirmation before applying.
+gix analyses the staged diff, groups related hunks and proposes one commit per group
 
 ---
 
@@ -78,18 +81,16 @@ Gix will group commits and ask for confirmation before applying.
 
 ### Set provider
 ```bash
-gix config set-provider openai
+gix config set-provider openai    # default
 gix config set-provider gemini
+gix config set-provider ollama    # local, no API key required
 ```
 
 ### Set API key
 
 ```bash
-# open-ai (default)
-gix config set-key
-
-# gemini
-gix config set-key --provider gemini
+gix config set-key                        # OpenAI
+gix config set-key --provider gemini      # Gemini
 ```
 
 Configure both providers and switch anytime.
@@ -102,6 +103,20 @@ Configure both providers and switch anytime.
 | -------- | ------------------- |------------------------|
 | OpenAI   | gpt-4o              | text-embedding-3-small |
 | Gemini   | gemini-flash-latest | gemini-embedding-001   |
+| Ollama   | llama3.1:8b (configurable) | nomic-embed-text (configurable)   |
+
+---
+
+### Update checks
+
+gix checks for new releases in the background after each command and prints a notice if one is available. Results are cached for 48 hours and the check never blocks the primary command.
+
+To disable:
+```bash
+gix config update-check off
+# or for a single session:
+GIX_CHECKPOINT_DISABLE=1 gix commit
+```
 
 ---
 
