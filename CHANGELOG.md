@@ -1,3 +1,20 @@
+## [v0.3.0] - 2026-03-01
+
+### Added
+- Ollama provider support, run `gix commit` and `gix split` fully offline with local models
+- `gix config set-provider ollama` no API key required
+- `gix config set-ollama-url <url>` point gix at a remote Ollama instance
+- `gix config set-ollama-model <chat-model> <embed-model>` to set specific models
+
+### Changed
+- Shared HTTP client extracted into `chatclient.go`, OpenAI, Ollama and other LLMs share the same transport layer with OpenAI-compatible API
+- Commit message prompt refactor to improve output quality across smaller local models
+- README updated with Ollama setup instructions and cleaner structure
+
+### Fixed
+- `gix config set-provider` now accepts `ollama` as a valid value
+- Early API key guard in registry blocked Ollama before reaching the provider switch
+
 ## [v0.2.9] - 2026-02-23
 ### Added
 
