@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+const (
+	MaxDiffBytesLocal = 14_000
+	MaxDiffBytesCloud = 100_000
+)
+
 // IsGitRepo checks whether the current working dir is inside a git work tree.
 func IsGitRepo() bool {
 	return exec.Command("git", "rev-parse", "--is-inside-work-tree").Run() == nil
@@ -22,9 +27,7 @@ func HasStagedChanges() (bool, error) {
 	return strings.TrimSpace(string(out)) != "", nil
 }
 
-const maxDiffBytes = 3_000
-
-func GetStagedDiff() (string, error) {
+func GetStagedDiff(maxBytes int) (string, error) {
 	var buf bytes.Buffer
 	cmd := exec.Command("git", "diff", "--cached", "--unified=3")
 	cmd.Stdout = &buf
@@ -38,7 +41,7 @@ func GetStagedDiff() (string, error) {
 		return "", fmt.Errorf("no staged changes - `git add <files>` to stage changes")
 	}
 
-	return truncateDiff(diff, maxDiffBytes), nil
+	return truncateDiff(diff, maxBytes), nil
 }
 
 func truncateDiff(diff string, maxBytes int) string {

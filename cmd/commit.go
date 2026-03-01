@@ -44,14 +44,19 @@ func runCommit(cmd *cobra.Command, _ []string) error {
 		return nil
 	}
 
-	diff, err := git.GetStagedDiff()
-	if err != nil {
-		return fmt.Errorf("reading diff: %w", err)
-	}
-
 	cfg, err := config.Load()
 	if err != nil {
 		return err
+	}
+
+	limit := git.MaxDiffBytesCloud
+	if cfg.ResolveProvider() == provider.ProviderOllama {
+		limit = git.MaxDiffBytesLocal
+	}
+
+	diff, err := git.GetStagedDiff(limit)
+	if err != nil {
+		return fmt.Errorf("reading diff: %w", err)
 	}
 
 	p, err := provider.NewFromConfig(cfg)
