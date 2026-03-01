@@ -37,18 +37,23 @@ func runSplit(_ *cobra.Command, _ []string) error {
 		return nil
 	}
 
-	hunks, err := git.ParseHunks()
+	cfg, err := config.Load()
+	if err != nil {
+		return err
+	}
+
+	limit := git.MaxDiffBytesCloud
+	if cfg.ResolveProvider() == provider.ProviderOllama {
+		limit = git.MaxDiffBytesLocal
+	}
+
+	hunks, err := git.ParseHunks(limit)
 	if err != nil {
 		return fmt.Errorf("parsing hunks: %w", err)
 	}
 	if len(hunks) == 0 {
 		fmt.Fprintln(os.Stderr, "no hunks found in staged diff")
 		return nil
-	}
-
-	cfg, err := config.Load()
-	if err != nil {
-		return err
 	}
 
 	p, err := provider.NewFromConfig(cfg)

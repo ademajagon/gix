@@ -16,7 +16,7 @@ type Hunk struct {
 	Body     string
 }
 
-func ParseHunks() ([]Hunk, error) {
+func ParseHunks(maxBytes int) ([]Hunk, error) {
 	cmd := exec.Command("git", "diff", "--cached", "--unified=3")
 	var buf bytes.Buffer
 	cmd.Stdout = &buf
@@ -25,7 +25,7 @@ func ParseHunks() ([]Hunk, error) {
 		return nil, fmt.Errorf("git diff --cached: %w", err)
 	}
 
-	return parseHunksFromDiff(buf.String())
+	return parseHunksFromDiff(truncateDiff(buf.String(), maxBytes))
 }
 
 // parseHunksFromDiff parses raw diff text into hunks.
