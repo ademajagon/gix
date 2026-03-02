@@ -1,0 +1,82 @@
+name: choco-publish.yml
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to publish (e.g. v0.3.0)"
+        required: true
+
+  repository_dispatch:
+    types: [choco-publish]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Pack & Push to Chocolatey
+    runs-on: windows-latest
+    if: github.repository == 'ademajagon/gix'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        shell: bash
+        run: |
+          VERSION="${{ github.event.inputs.version || github.event.client_payload.version }}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Download release binaries & checksums
+        shell: pwsh
+        run: |
+          $version = "${{ steps.ver.outputs.version }}"
+          $tag = "${{ steps.ver.outputs.tag }}"
+          $base = "https://github.com/ademajagon/gix/releases/download/$tag"
+          
+          Invoke-WebRequest "$base/gix-windows-amd64.exe" -OutFile "gix-windows-amd64.exe"
+          Invoke-WebRequest "$base/gix-windows-arm64.exe" -OutFile "gix-windows-arm64.exe"
+          Invoke-WebRequest "$base/checksums.txt" -OutFile "checksums.txt"
+
+      - name: Extract checksums
+        id: checksums
+        shell: pwsh
+        run: |
+          $lines = Get-Content checksums.txt
+          $amd64 = ($lines | Where-Object { $_ -match 'gix-windows-amd64' }) -split '\s+' | Select-Object -First 1
+          $arm64 = ($lines | Where-Object { $_ -match 'gix-windows-arm64' }) -split '\s+' | Select-Object -First 1
+          echo "amd64=$amd64" >> $env:GITHUB_OUTPUT
+          echo "arm64=$arm64" >> $env:GITHUB_OUTPUT
+
+      - name: Patch nuspec version
+        shell: pwsh
+        run: |
+          $nuspec = Get-Content choco\gix.nuspec -Raw
+          $nuspec = $nuspec -replace '<version>.*?</version>', "<version>${{ steps.ver.outputs.version }}</version>"
+          $nuspec = $nuspec -replace 'tag/v.*?"', "tag/${{ steps.ver.outputs.tag }}`""
+          Set-Content choco\gix.nuspec $nuspec
+
+      - name: Patch install script (version + checksums)
+        shell: pwsh
+        run: |
+          $script = Get-Content choco\tools\chocolateyInstall.ps1 -Raw
+          
+          $script = $script -replace "version\s*=\s*'.*?'",   "version   = '${{ steps.ver.outputs.version }}'"
+          $script = $script -replace 'REPLACE_WITH_SHA256_AMD64', '${{ steps.checksums.outputs.amd64 }}'
+          $script = $script -replace 'REPLACE_WITH_SHA256_ARM64', '${{ steps.checksums.outputs.arm64 }}'
+          
+          Set-Content choco\tools\chocolateyInstall.ps1 $script
+
+      - name: Pack
+        shell: pwsh
+        run: choco pack choco\gix.nuspec --out choco-out
+
+      - name: Push to Chocolatey
+        shell: pwsh
+        run: |
+          choco push choco-out\gix.${{ steps.ver.outputs.version }}.nupkg `
+            --source https://push.chocolatey.org `
+            --api-key ${{ secrets.CHOCO_API_KEY }}
