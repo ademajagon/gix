@@ -7,8 +7,8 @@ $assetName = "gix-windows-$arch.exe"
 $url       = "https://github.com/$repo/releases/download/v$version/$assetName"
 
 $checksums = @{
-    'amd64' = 'REPLACE_WITH_SHA256_AMD64'
-    'arm64' = 'REPLACE_WITH_SHA256_ARM64'
+    'amd64' = '217449915690b9c1058e53cd6619d903a2bcc5ff1939e99446092f1a04755532'
+    'arm64' = '608250d8f1861721ea9abaf9b4a566f875c262f5758be87d3fd9b73de735caf4'
 }
 
 $packageArgs = @{
