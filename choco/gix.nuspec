@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>gix</id>
+    <version>0.3.0</version>
+    <packageSourceUrl>https://github.com/ademajagon/gix</packageSourceUrl>
+    <owners>ademajagon</owners>
+
+    <title>gix</title>
+    <authors>Agon Ademaj</authors>
+    <projectUrl>https://github.com/ademajagon/gix</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/ademajagon/gix/master/docs/logo_gix_dark.svg</iconUrl>
+    <licenseUrl>https://github.com/ademajagon/gix/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+
+    <projectSourceUrl>https://github.com/ademajagon/gix</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/ademajagon/gix/issues</bugTrackerUrl>
+    <tags>git ai commit conventional-commits cli developer-tools openai gemini ollama</tags>
+
+    <summary>AI-powered git commit assistant</summary>
+    <description>
+gix generates conventional commit messages from your staged git diff using AI.
+
+## Features
+
+- Generates Conventional Commits from staged diffs
+- `gix split` splits a large diff into multiple semantic commits
+- Embedding-based hunk clustering for intelligent grouping
+- Multiple AI providers: OpenAI, Gemini, or Ollama (fully local/offline)
+- Single binary, no runtime dependencies
+
+## Usage
+
+```
+git add .
+gix commit
+```
+
+You will see a suggested message and can accept, edit, regenerate, or cancel.
+
+## Configuration
+
+```
+gix config set-provider openai     # default
+gix config set-provider gemini
+gix config set-provider ollama     # local, no API key required
+gix config set-key                 # set OpenAI key
+gix config set-key --provider gemini
+```
+    </description>
+    <releaseNotes>https://github.com/ademajagon/gix/releases/tag/v0.3.0</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
