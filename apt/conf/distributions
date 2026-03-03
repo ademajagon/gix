@@ -1,0 +1,7 @@
+Origin: gix
+Label: gix
+Codename: stable
+Architectures: amd64 arm64
+Components: main
+Description: gix APT repository
+SignWith: F23E51126DB1F687

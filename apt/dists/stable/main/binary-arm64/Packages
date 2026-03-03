@@ -1,0 +1,16 @@
+Package: gix
+Version: 0.3.1
+Architecture: arm64
+Maintainer: Agon Ademaj <agon@ademajagon.com>
+Priority: optional
+Section: utils
+Filename: pool/main/g/gix/gix_0.3.1_arm64.deb
+Size: 4626120
+SHA256: 133bdf8c4e854cd6ae5a544b8fad3e802b866a92d20ad0e43e3f05c8249b067f
+SHA1: ad88db1957507a275eae611be6e85cd640a247c8
+MD5sum: 1da022b316c645bfdf39c685a59204a8
+Description: AI powered git commit assistant
+ gix generates conventional commit messages from your staged diff
+ and splits large changes into small atomic commits using AI.
+Homepage: https://github.com/ademajagon/gix
+

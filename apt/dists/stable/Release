@@ -1,0 +1,28 @@
+Origin: gix
+Label: gix
+Codename: stable
+Date: Tue, 03 Mar 2026 22:13:30 UTC
+Architectures: amd64 arm64
+Components: main
+Description: gix APT repository
+MD5Sum:
+ b2aaf0398cb98d713fca526d5dd79b0c 567 main/binary-amd64/Packages
+ 19bad0f5b8cae197df9b2936d5119451 415 main/binary-amd64/Packages.gz
+ ab7a19fe36c3f85eec3905ee54576ee0 91 main/binary-amd64/Release
+ f5f79f89b4f343186864c2fba8a8fbea 567 main/binary-arm64/Packages
+ 80707c426f3a9e4b60546ecabda68edc 414 main/binary-arm64/Packages.gz
+ 8312c1ccfcc9b0fe54a047b08452323a 91 main/binary-arm64/Release
+SHA1:
+ e9331085bbdf563e0c4364c2513f49127e1141b9 567 main/binary-amd64/Packages
+ 51bc80785a7e7f75301ab47e64306ce45d73cf1b 415 main/binary-amd64/Packages.gz
+ 80cc691987d93107a4c1d928b0f8bc12902d00b4 91 main/binary-amd64/Release
+ 762e14930d64167f16964e6db9abb0a5e4845432 567 main/binary-arm64/Packages
+ 593b2577e81593e9490fddd07c991c20fbe8991a 414 main/binary-arm64/Packages.gz
+ 7a952c2870efd8c36eddac59e3ff35b5e2c2bd23 91 main/binary-arm64/Release
+SHA256:
+ afe3780b5b53811246bf51394e6c71622f55efd40e11379a5e8de84ff3719fc9 567 main/binary-amd64/Packages
+ 2c6f440f51d16e1c584f001bd4e31bed2877cec8439a97546c0b4ece09150512 415 main/binary-amd64/Packages.gz
+ bb3e6837abaea3fd8a5b1e68fbc20e3da894804ffda5f522d08baba9b471408e 91 main/binary-amd64/Release
+ 3a038e7546f96ad5d57912344d353297712276ceb2dfbcce906b62e180544f71 567 main/binary-arm64/Packages
+ 86db4d104ddb81baad3804d650647831cf8721866cd2316eff2801c49a3c174d 414 main/binary-arm64/Packages.gz
+ 1018be4cd0c68cb5a68404f55bcc9a532cc9470dc7d51101337e542aa23ccf2f 91 main/binary-arm64/Release

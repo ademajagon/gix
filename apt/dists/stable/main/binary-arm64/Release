@@ -1,0 +1,5 @@
+Component: main
+Origin: gix
+Label: gix
+Architecture: arm64
+Description: gix APT repository
