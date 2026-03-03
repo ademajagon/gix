@@ -16,9 +16,9 @@ STAGING="${TMPDIR:-/tmp}/${PACKAGE_NAME}"
 echo "Building ${PACKAGE_NAME}.deb"
 
 mkdir -p "${STAGING}/DEBIAN"
-mkdir -p "${STAGING}/usr/local/bin"
+mkdir -p "${STAGING}/usr/bin"
 
-install -m 0755 "${BINARY}" "${STAGING}/usr/local/bin/gix"
+install -m 0755 "${BINARY}" "${STAGING}/usr/bin/gix"
 
 cat > "${STAGING}/DEBIAN/control" <<EOF
 Package: gix
