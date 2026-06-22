@@ -22,7 +22,7 @@ jobs:
         goarch: [amd64, arm64]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-go@v6
         with:
           go-version: "1.24"
@@ -60,7 +60,7 @@ jobs:
         goarch: [amd64, arm64]
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download Linux binary
         uses: actions/download-artifact@v8
@@ -142,7 +142,7 @@ jobs:
           path: debs/
 
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: gh-pages
           path: gh-pages
