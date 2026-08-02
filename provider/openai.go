@@ -5,18 +5,24 @@ import "time"
 const (
 	openaiChatURL    = "https://api.openai.com/v1/chat/completions"
 	openaiEmbedURL   = "https://api.openai.com/v1/embeddings"
-	openaiChatModel  = "gpt-4o"
-	openaiEmbedModel = "text-embedding-3-small"
+	defaultOpenAIChatModel  = "gpt-4o"
+	defaultOpenAIEmbedModel = "text-embedding-3-small"
 )
 
 type OpenAI struct{ *chatClient }
 
-func NewOpenAI(apiKey string) *OpenAI {
+func NewOpenAI(apiKey, chatModel, embedModel string) *OpenAI {
+	if chatModel == "" {
+		chatModel = defaultOpenAIChatModel
+	}
+	if embedModel == "" {
+		embedModel = defaultOpenAIEmbedModel
+	}
 	return &OpenAI{newChatClient(
 		openaiChatURL,
 		openaiEmbedURL,
-		openaiChatModel,
-		openaiEmbedModel,
+		chatModel,
+		embedModel,
 		apiKey,
 		20*time.Second,
 	)}

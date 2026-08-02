@@ -18,6 +18,11 @@ type Config struct {
 	GeminiKey string `json:"gemini_key,omitempty"`
 	Provider  string `json:"provider,omitempty"`
 
+	OpenAIChatModel  string `json:"openai_chat_model,omitempty"`
+	OpenAIEmbedModel string `json:"openai_embed_model,omitempty"`
+	GeminiChatModel  string `json:"gemini_chat_model,omitempty"`
+	GeminiEmbedModel string `json:"gemini_embed_model,omitempty"`
+
 	OllamaBaseURL    string `json:"ollama_base_url,omitempty"`
 	OllamaChatModel  string `json:"ollama_chat_model,omitempty"`
 	OllamaEmbedModel string `json:"ollama_embed_model,omitempty"`

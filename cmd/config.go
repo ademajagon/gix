@@ -71,6 +71,22 @@ Example:
 	RunE: runSetOllamaModel,
 }
 
+var setOpenAIModelCmd = &cobra.Command{
+	Use:   "set-openai-model <chat-model> <embed-model>",
+	Short: "Set the OpenAI chat and embed models",
+	Long:  `Set the OpenAI models used for commit messages and gix split.`,
+	Args:  cobra.ExactArgs(2),
+	RunE:  runSetOpenAIModel,
+}
+
+var setGeminiModelCmd = &cobra.Command{
+	Use:   "set-gemini-model <chat-model> <embed-model>",
+	Short: "Set the Gemini chat and embed models",
+	Long:  `Set the Gemini models used for commit messages and gix split.`,
+	Args:  cobra.ExactArgs(2),
+	RunE:  runSetGeminiModel,
+}
+
 var keyProvider string
 
 func init() {
@@ -81,6 +97,8 @@ func init() {
 	configCmd.AddCommand(setUpdateCheckCmd)
 	configCmd.AddCommand(setOllamaURLCmd)
 	configCmd.AddCommand(setOllamaModelCmd)
+	configCmd.AddCommand(setOpenAIModelCmd)
+	configCmd.AddCommand(setGeminiModelCmd)
 	rootCmd.AddCommand(configCmd)
 }
 
@@ -172,5 +190,27 @@ func runSetOllamaModel(_ *cobra.Command, args []string) error {
 		return fmt.Errorf("saving config: %w", err)
 	}
 	fmt.Printf("Ollama models set — chat: %q, embed: %q\n", cfg.OllamaChatModel, cfg.OllamaEmbedModel)
+	return nil
+}
+
+func runSetOpenAIModel(_ *cobra.Command, args []string) error {
+	cfg, _ := config.Load()
+	cfg.OpenAIChatModel = strings.TrimSpace(args[0])
+	cfg.OpenAIEmbedModel = strings.TrimSpace(args[1])
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("saving config: %w", err)
+	}
+	fmt.Printf("OpenAI models set — chat: %q, embed: %q\n", cfg.OpenAIChatModel, cfg.OpenAIEmbedModel)
+	return nil
+}
+
+func runSetGeminiModel(_ *cobra.Command, args []string) error {
+	cfg, _ := config.Load()
+	cfg.GeminiChatModel = strings.TrimSpace(args[0])
+	cfg.GeminiEmbedModel = strings.TrimSpace(args[1])
+	if err := config.Save(cfg); err != nil {
+		return fmt.Errorf("saving config: %w", err)
+	}
+	fmt.Printf("Gemini models set — chat: %q, embed: %q\n", cfg.GeminiChatModel, cfg.GeminiEmbedModel)
 	return nil
 }
